@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model StaffUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("inspector")
+  createdAt DateTime @default(now())
+}
+
+model Migrant {
+  id                 String   @id
+  firstName          String
+  lastName           String
+  middleName         String   @default("")
+  citizenship        String
+  passportNumber     String
+  phone              String
+  birthDate          String
+  status             String   @default("active")
+  registrationDate   String
+  registrationExpiry String
+  patentNumber       String?
+  patentExpiry       String?
+  employer           String?
+  photo              String?
+  address            String
+  violations         Int      @default(0)
+  lat                Float
+  lng                Float
+  lastSeen           DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  documents       Document[]
+  payments        Payment[]
+  locationHistory LocationHistory[]
+  chatMessages    ChatMessage[]
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  migrantId  String
+  type       String
+  name       String
+  status     String   @default("pending")
+  filePath   String?
+  uploadedAt DateTime @default(now())
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id          String @id @default(cuid())
+  migrantId   String
+  type        String
+  amount      Int
+  currency    String @default("RUB")
+  date        String
+  status      String
+  description String
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
+}
+
+model LocationHistory {
+  id        String   @id @default(cuid())
+  migrantId String
+  lat       Float
+  lng       Float
+  timestamp DateTime
+  address   String
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  migrantId String
+  from      String
+  text      String
+  createdAt DateTime @default(now())
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
+}
+
+model SmsCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+}
