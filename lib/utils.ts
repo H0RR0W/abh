@@ -82,7 +82,7 @@ export function getPaymentStatusColor(status: string): string {
   return colors[status] ?? "bg-gray-100 text-gray-700";
 }
 
-export function getCitizenshipFlag(_citizenship: string): string {
+export function getCitizenshipFlag(citizenship: string): string { void citizenship;
   return "";
 }
 
