@@ -87,10 +87,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        <div className="mt-6 p-3 bg-slate-50 rounded-lg text-xs text-slate-500 space-y-1">
-          <div><span className="font-medium">Инспектор:</span> inspector@migration.gov / inspector123</div>
-          <div><span className="font-medium">Админ:</span> admin@migration.gov / admin123</div>
-        </div>
       </div>
     </div>
   );

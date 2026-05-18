@@ -48,7 +48,7 @@ export default function MigrantLoginPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col relative overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 text-white">
         <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-4">

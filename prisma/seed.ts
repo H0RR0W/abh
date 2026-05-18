@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import migrants from "../data/migrants.json";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import * as dotenv from "dotenv";
+import { addressToDistrict } from "../lib/districts";
 dotenv.config();
 
 const dbUrl = process.env.DATABASE_URL ?? "file:./prisma/dev.db";
@@ -12,35 +13,34 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Seeding database...");
 
-  const adminHash = await bcrypt.hash("admin123", 10);
-  const inspHash = await bcrypt.hash("inspector123", 10);
+  const demoHash = await bcrypt.hash("Demo1234!", 10);
 
-  await prisma.staffUser.upsert({
-    where: { email: "admin@migration.gov" },
-    update: {},
-    create: {
-      email: "admin@migration.gov",
-      password: adminHash,
-      name: "Администратор",
-      role: "admin",
-    },
-  });
+  const staffAccounts = [
+    { email: "admin@migration.gov", name: "Администратор", role: "admin", districts: "[]" },
+    { email: "inspector@migration.gov", name: "Амра Пилия", role: "inspector", districts: JSON.stringify(["Сухумский","Гагрский"]) },
+    { email: "operator@migration.gov", name: "Оператор Демо", role: "operator", districts: JSON.stringify(["Очамчырский","Гулрыпшский"]) },
+    { email: "analyst@migration.gov", name: "Аналитик Демо", role: "analyst", districts: "[]" },
+    { email: "management@migration.gov", name: "Руководитель Демо", role: "management", districts: "[]" },
+  ];
 
-  await prisma.staffUser.upsert({
-    where: { email: "inspector@migration.gov" },
-    update: {},
-    create: {
-      email: "inspector@migration.gov",
-      password: inspHash,
-      name: "Амра Пилия",
-      role: "inspector",
-    },
-  });
+  for (const account of staffAccounts) {
+    await prisma.staffUser.upsert({
+      where: { email: account.email },
+      update: { role: account.role, password: demoHash, name: account.name, districts: account.districts },
+      create: {
+        email: account.email,
+        password: demoHash,
+        name: account.name,
+        role: account.role,
+        districts: account.districts,
+      },
+    });
+  }
 
   for (const m of migrants as any[]) {
     await prisma.migrant.upsert({
       where: { id: m.id },
-      update: {},
+      update: { district: m.district ?? addressToDistrict(m.address) },
       create: {
         id: m.id,
         firstName: m.firstName,
@@ -53,10 +53,10 @@ async function main() {
         status: m.status,
         registrationDate: m.registrationDate,
         registrationExpiry: m.registrationExpiry,
-        patentNumber: m.patentNumber ?? null,
-        patentExpiry: m.patentExpiry ?? null,
+        employed: m.employed ?? false,
         employer: m.employer ?? null,
         address: m.address,
+        district: m.district ?? addressToDistrict(m.address),
         violations: m.violations,
         lat: m.lat,
         lng: m.lng,
@@ -92,7 +92,7 @@ async function main() {
     });
   }
 
-  console.log("✓ Seeded", migrants.length, "migrants + 2 staff users");
+  console.log("✓ Seeded", migrants.length, "migrants + 5 staff users");
 }
 
 main()

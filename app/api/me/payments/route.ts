@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       currency: "RUB",
       date: new Date().toISOString().split("T")[0],
       status: "paid",
-      description: body.description ?? `Патент ${new Date().toLocaleDateString("ru-RU", { month: "long", year: "numeric" })}`,
+      description: body.description ?? `Разрешение на работу — ${new Date().toLocaleDateString("ru-RU", { month: "long", year: "numeric" })}`,
     },
   });
   return NextResponse.json(payment, { status: 201 });

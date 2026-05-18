@@ -4,50 +4,37 @@ import { useState, useEffect } from "react";
 import { Download, FileText, FileSpreadsheet } from "lucide-react";
 import { formatCurrency, getCitizenshipFlag } from "@/lib/utils";
 
-interface Payment {
-  type: string;
-  amount: number;
-  status: string;
-}
-
-interface MigrantSummary {
-  id: string;
-  citizenship: string;
-  status: string;
-  payments: Payment[];
+interface Stats {
+  total: number;
+  active: number;
+  expired: number;
+  blocked: number;
+  totalRevenue: number;
+  citizenshipData: { name: string; value: number }[];
 }
 
 const REPORTS = [
   { title: "Общий реестр мигрантов", desc: "Полный список с персональными данными", format: "Excel" },
-  { title: "Просроченные документы", desc: "Мигранты с истекшими сроками регистрации или патентов", format: "PDF" },
-  { title: "Финансовые поступления", desc: "Отчёт по платежам патентов, пошлин и штрафов", format: "Excel" },
+  { title: "Просроченные документы", desc: "Мигранты с истекшими сроками регистрации или разрешений на работу", format: "PDF" },
+  { title: "Финансовые поступления", desc: "Отчёт по разрешениям на работу, пошлинам и штрафам", format: "Excel" },
   { title: "Статистика по странам", desc: "Распределение мигрантов по гражданству", format: "PDF" },
   { title: "Нарушители", desc: "Мигранты с зафиксированными нарушениями", format: "Excel" },
   { title: "Журнал действий инспекторов", desc: "Лог активности сотрудников миграционной службы", format: "CSV" },
 ];
 
 export default function ReportsPage() {
-  const [data, setData] = useState<MigrantSummary[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetch("/api/migrants")
+    fetch("/api/stats")
       .then((r) => r.json())
-      .then((d) => { if (Array.isArray(d)) setData(d); })
+      .then((d) => { if (d && !d.error) setStats(d); })
       .catch(console.error);
   }, []);
 
-  const citizenshipStats = data.reduce(
-    (acc, m) => {
-      acc[m.citizenship] = (acc[m.citizenship] ?? 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
-
-  const totalRevenue = data
-    .flatMap((m) => m.payments)
-    .filter((p) => p.status === "paid")
-    .reduce((sum, p) => sum + p.amount, 0);
+  const total = stats?.total ?? 0;
+  const totalRevenue = stats?.totalRevenue ?? 0;
+  const citizenshipData = stats?.citizenshipData ?? [];
 
   function handleDownload(title: string) {
     if (title === "Общий реестр мигрантов") {
@@ -68,14 +55,12 @@ export default function ReportsPage() {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <div className="text-sm text-slate-500 mb-3">Всего мигрантов</div>
-          <div className="text-3xl font-bold text-slate-900">{data.length}</div>
+          <div className="text-3xl font-bold text-slate-900">{total}</div>
           <div className="mt-3 space-y-1">
-            {Object.entries(citizenshipStats)
-              .sort((a, b) => b[1] - a[1])
-              .map(([c, n]) => (
-                <div key={c} className="flex justify-between text-xs text-slate-500">
-                  <span>{getCitizenshipFlag(c)} {c}</span>
-                  <span className="font-medium">{n}</span>
+            {citizenshipData.map(({ name, value }) => (
+                <div key={name} className="flex justify-between text-xs text-slate-500">
+                  <span>{name}</span>
+                  <span className="font-medium">{value}</span>
                 </div>
               ))}
           </div>
@@ -87,9 +72,9 @@ export default function ReportsPage() {
           </div>
           <div className="mt-3 space-y-1">
             {[
-              { label: "Патенты", amount: data.flatMap(m => m.payments).filter(p => p.type === "patent" && p.status === "paid").reduce((s, p) => s + p.amount, 0) },
-              { label: "Пошлины", amount: data.flatMap(m => m.payments).filter(p => p.type === "duty" && p.status === "paid").reduce((s, p) => s + p.amount, 0) },
-              { label: "Штрафы", amount: data.flatMap(m => m.payments).filter(p => p.type === "fine" && p.status === "paid").reduce((s, p) => s + p.amount, 0) },
+              { label: "Разрешения на работу", amount: totalRevenue },
+              { label: "Пошлины", amount: 0 },
+              { label: "Штрафы", amount: 0 },
             ].map(({ label, amount }) => (
               <div key={label} className="flex justify-between text-xs text-slate-500">
                 <span>{label}</span>
@@ -102,9 +87,9 @@ export default function ReportsPage() {
           <div className="text-sm text-slate-500 mb-3">Статусы</div>
           <div className="space-y-2 mt-2">
             {[
-              { label: "Активных", count: data.filter(m => m.status === "active").length, color: "bg-emerald-500" },
-              { label: "Просроченных", count: data.filter(m => m.status === "expired").length, color: "bg-amber-500" },
-              { label: "Заблокированных", count: data.filter(m => m.status === "blocked").length, color: "bg-red-500" },
+              { label: "Активных", count: stats?.active ?? 0, color: "bg-emerald-500" },
+              { label: "Просроченных", count: stats?.expired ?? 0, color: "bg-amber-500" },
+              { label: "Заблокированных", count: stats?.blocked ?? 0, color: "bg-red-500" },
             ].map(({ label, count, color }) => (
               <div key={label}>
                 <div className="flex justify-between text-xs text-slate-600 mb-1">
@@ -114,7 +99,7 @@ export default function ReportsPage() {
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full ${color} rounded-full`}
-                    style={{ width: data.length > 0 ? `${(count / data.length) * 100}%` : "0%" }}
+                    style={{ width: total > 0 ? `${(count / total) * 100}%` : "0%" }}
                   />
                 </div>
               </div>

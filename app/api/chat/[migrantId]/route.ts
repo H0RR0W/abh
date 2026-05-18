@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getStaffFromReq, getMigrantFromReq } from "@/lib/auth";
+import { requireRole, getMigrantFromReq } from "@/lib/auth";
 
 export async function GET(req: NextRequest, { params }: { params: { migrantId: string } }) {
-  const staff = await getStaffFromReq(req);
+  const staff = await requireRole(req, "messages.view");
   const migrant = await getMigrantFromReq(req);
   if (!staff && !migrant) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { migrantId: s
 }
 
 export async function POST(req: NextRequest, { params }: { params: { migrantId: string } }) {
-  const staff = await getStaffFromReq(req);
+  const staff = await requireRole(req, "messages.send");
   const migrant = await getMigrantFromReq(req);
   if (!staff && !migrant) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

@@ -22,93 +22,209 @@ import {
   TrendingUp,
   CheckCircle,
   XCircle,
-  MapPin,
-  DollarSign,
+  Bell,
+  RefreshCw,
+  ChevronRight,
+  WifiOff,
 } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency, getCitizenshipFlag } from "@/lib/utils";
 
-interface Payment {
-  id: string;
-  type: string;
-  amount: number;
-  status: string;
-}
-
-interface MigrantSummary {
-  id: string;
-  firstName: string;
-  lastName: string;
-  status: string;
-  violations: number;
-  citizenship: string;
-  payments: Payment[];
-}
-
-const monthlyData = [
-  { month: "Янв", registrations: 32, payments: 96000 },
-  { month: "Фев", registrations: 28, payments: 84000 },
-  { month: "Мар", registrations: 41, payments: 123000 },
-  { month: "Апр", registrations: 35, payments: 105000 },
-  { month: "Май", registrations: 22, payments: 66000 },
-];
 
 const PIE_COLORS = ["#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6"];
 
+interface Stats {
+  total: number;
+  active: number;
+  expired: number;
+  blocked: number;
+  totalRevenue: number;
+  monthlyData: { month: string; registrations: number; payments: number }[];
+  citizenshipData: { name: string; value: number }[];
+}
+
+interface GpsLostMigrant {
+  id: string;
+  firstName: string;
+  lastName: string;
+  lastSeen: string;
+  address: string;
+}
+
+interface StaffMe {
+  role: string;
+  districts: string[];
+}
+
 export default function DashboardPage() {
-  const [data, setData] = useState<MigrantSummary[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [notifRunning, setNotifRunning] = useState(false);
+  const [notifResult, setNotifResult] = useState<{ sent: number; checked: number } | null>(null);
+  const [notifThreshold, setNotifThreshold] = useState(30);
+  const [pendingVerifications, setPendingVerifications] = useState(0);
+  const [gpsLost, setGpsLost] = useState<GpsLostMigrant[]>([]);
+  const [gpsAlertDismissed, setGpsAlertDismissed] = useState(false);
+  const [staffMe, setStaffMe] = useState<StaffMe | null>(null);
+
+  function loadStats() {
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => { if (d && !d.error) setStats(d); })
+      .catch(console.error);
+    fetch("/api/inspections?status=pending&type=verification")
+      .then((r) => r.json())
+      .then((d) => { if (Array.isArray(d)) setPendingVerifications(d.length); })
+      .catch(console.error);
+    fetch("/api/admin/gps-lost")
+      .then((r) => r.json())
+      .then((d) => { if (Array.isArray(d.migrants)) setGpsLost(d.migrants); })
+      .catch(console.error);
+  }
 
   useEffect(() => {
-    fetch("/api/migrants")
+    loadStats();
+    fetch("/api/me/staff")
       .then((r) => r.json())
-      .then((d) => { if (Array.isArray(d)) setData(d); })
+      .then((d) => { if (d && !d.error) setStaffMe({ role: d.role, districts: d.districts ?? [] }); })
       .catch(console.error);
+    // Refresh GPS status every 2 minutes
+    const interval = setInterval(() => {
+      fetch("/api/admin/gps-lost")
+        .then((r) => r.json())
+        .then((d) => { if (Array.isArray(d.migrants)) { setGpsLost(d.migrants); setGpsAlertDismissed(false); } })
+        .catch(console.error);
+    }, 120_000);
+    return () => clearInterval(interval);
   }, []);
 
-  const totalMigrants = data.length;
-  const activeMigrants = data.filter((m) => m.status === "active").length;
-  const expiredMigrants = data.filter((m) => m.status === "expired").length;
-  const blockedMigrants = data.filter((m) => m.status === "blocked").length;
+  async function runNotifications() {
+    setNotifRunning(true);
+    setNotifResult(null);
+    try {
+      const res = await fetch(`/api/cron/notifications?threshold=${notifThreshold}`, {
+        method: "POST",
+        headers: { "x-cron-secret": "demo-secret" },
+      });
+      const json = await res.json();
+      setNotifResult({ sent: json.sent ?? 0, checked: json.checked ?? 0 });
+    } catch {
+      setNotifResult({ sent: 0, checked: 0 });
+    } finally {
+      setNotifRunning(false);
+    }
+  }
 
-  const totalRevenue = data
-    .flatMap((m) => m.payments)
-    .filter((p) => p.status === "paid")
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const unpaidFines = data
-    .flatMap((m) => m.payments)
-    .filter((p) => p.type === "fine" && p.status === "unpaid")
-    .reduce((sum, p) => sum + p.amount, 0);
-
-  const citizenshipStats = data.reduce(
-    (acc, m) => {
-      acc[m.citizenship] = (acc[m.citizenship] ?? 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>
-  );
-
-  const citizenshipData = Object.entries(citizenshipStats)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, value]) => ({ name, value }));
-
-  const recentAlerts = data
-    .filter((m) => m.status !== "active" || m.violations > 0)
-    .slice(0, 5);
+  const totalMigrants = stats?.total ?? 0;
+  const activeMigrants = stats?.active ?? 0;
+  const expiredMigrants = stats?.expired ?? 0;
+  const blockedMigrants = stats?.blocked ?? 0;
+  const totalRevenue = stats?.totalRevenue ?? 0;
+  const monthlyData = stats?.monthlyData ?? [];
+  const citizenshipData = stats?.citizenshipData ?? [];
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Дашборд</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Обзор системы по состоянию на{" "}
-          {new Date().toLocaleDateString("ru-RU", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })}
-        </p>
+    <div className="p-6 space-y-6 bg-[#F0F2F5] min-h-screen">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 uppercase tracking-wide">Дашборд</h1>
+          <p className="text-slate-500 text-xs mt-1 uppercase tracking-wider">
+            Обзор системы по состоянию на{" "}
+            {new Date().toLocaleDateString("ru-RU", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          {notifResult && (
+            <span className="text-sm text-emerald-600 font-medium">
+              Отправлено {notifResult.sent} из {notifResult.checked}
+            </span>
+          )}
+          <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <span className="text-xs text-slate-500 whitespace-nowrap">Порог (дней):</span>
+            <select
+              value={notifThreshold}
+              onChange={(e) => { setNotifResult(null); setNotifThreshold(Number(e.target.value)); }}
+              disabled={notifRunning}
+              className="text-sm font-medium text-slate-700 bg-transparent focus:outline-none cursor-pointer"
+            >
+              <option value={7}>7 дней</option>
+              <option value={14}>14 дней</option>
+              <option value={30}>30 дней</option>
+              <option value={60}>60 дней</option>
+              <option value={90}>90 дней</option>
+            </select>
+          </div>
+          <button
+            onClick={runNotifications}
+            disabled={notifRunning}
+            className="flex items-center gap-2 px-4 py-2 bg-[#1E3A5F] hover:bg-[#0C2340] disabled:opacity-60 text-white text-sm font-medium rounded-md transition-colors"
+          >
+            {notifRunning ? (
+              <RefreshCw size={15} className="animate-spin" />
+            ) : (
+              <Bell size={15} />
+            )}
+            Отправить уведомления
+          </button>
+        </div>
       </div>
+
+      {/* District responsibility banner */}
+      {staffMe && (staffMe.role === "inspector" || staffMe.role === "operator") && staffMe.districts.length > 0 && (
+        <div className="bg-white border border-[#1E3A5F]/20 rounded-md px-4 py-3 flex items-center gap-3 flex-wrap">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">Ваша зона ответственности:</span>
+          <div className="flex flex-wrap gap-2">
+            {staffMe.districts.map((d) => (
+              <span
+                key={d}
+                className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#0C2340] text-white cursor-default"
+              >
+                {d}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* GPS Lost Alert */}
+      {gpsLost.length > 0 && !gpsAlertDismissed && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-md bg-red-600 flex items-center justify-center flex-shrink-0">
+                <WifiOff size={16} className="text-white" />
+              </div>
+              <div>
+                <div className="font-semibold text-red-800 text-sm">
+                  GPS-сигнал потерян — {gpsLost.length}{" "}
+                  {gpsLost.length === 1 ? "мигрант" : gpsLost.length < 5 ? "мигранта" : "мигрантов"}
+                </div>
+                <div className="text-xs text-red-500 mt-0.5">
+                  Нет данных о местоположении более 24 часов
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Link
+                href="/admin/alerts"
+                className="text-xs font-medium text-red-700 hover:text-red-900 underline underline-offset-2"
+              >
+                Перейти к списку
+              </Link>
+              <button
+                onClick={() => setGpsAlertDismissed(true)}
+                className="text-red-300 hover:text-red-500 transition-colors"
+                title="Скрыть"
+              >
+                <XCircle size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* KPI Cards */}
       <div className="grid grid-cols-4 gap-4">
@@ -138,44 +254,47 @@ export default function DashboardPage() {
           value={formatCurrency(totalRevenue)}
           icon={<TrendingUp size={20} className="text-violet-600" />}
           color="violet"
-          sub="оплачено патентов"
+          sub="оплачено сборов"
         />
       </div>
 
       {/* Second row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-800 mb-4">
+        <div className="col-span-2 bg-white rounded-md border border-slate-200 p-5 shadow-sm">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
             Регистрации по месяцам
           </h2>
           <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <BarChart data={monthlyData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 12, fill: "#64748b" }}
-                axisLine={false}
+                axisLine={{ stroke: "#cbd5e1" }}
                 tickLine={false}
               />
               <YAxis
                 tick={{ fontSize: 12, fill: "#64748b" }}
                 axisLine={false}
                 tickLine={false}
+                allowDecimals={false}
+                width={30}
               />
               <Tooltip
                 contentStyle={{
-                  borderRadius: 8,
+                  borderRadius: 4,
                   border: "1px solid #e2e8f0",
-                  boxShadow: "0 4px 6px -1px rgba(0,0,0,.1)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,.08)",
+                  fontSize: 12,
                 }}
               />
-              <Bar dataKey="registrations" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Регистрации" />
+              <Bar dataKey="registrations" fill="#1E3A5F" radius={[3, 3, 0, 0]} name="Регистрации" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-800 mb-4">
+        <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
             По гражданству
           </h2>
           <ResponsiveContainer width="100%" height={180}>
@@ -208,7 +327,7 @@ export default function DashboardPage() {
                     style={{ background: PIE_COLORS[i % PIE_COLORS.length] }}
                   />
                   <span className="text-slate-600">
-                    {getCitizenshipFlag(item.name)} {item.name}
+                    {item.name}
                   </span>
                 </div>
                 <span className="font-medium text-slate-800">{item.value}</span>
@@ -220,116 +339,127 @@ export default function DashboardPage() {
 
       {/* Third row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2 bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-800 mb-4">
+        <div className="col-span-2 bg-white rounded-md border border-slate-200 p-5 shadow-sm">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
             Финансовые поступления (₽)
           </h2>
           <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <LineChart data={monthlyData} margin={{ top: 5, right: 10, bottom: 0, left: -10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 12, fill: "#64748b" }}
-                axisLine={false}
+                axisLine={{ stroke: "#cbd5e1" }}
                 tickLine={false}
               />
               <YAxis
                 tick={{ fontSize: 12, fill: "#64748b" }}
                 axisLine={false}
                 tickLine={false}
+                width={50}
+                tickFormatter={(v) => v >= 1000 ? `${v/1000}к` : v}
               />
               <Tooltip
                 formatter={(v) => [formatCurrency(Number(v)), "Поступления"]}
                 contentStyle={{
-                  borderRadius: 8,
+                  borderRadius: 4,
                   border: "1px solid #e2e8f0",
+                  fontSize: 12,
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="payments"
-                stroke="#8b5cf6"
+                stroke="#1E3A5F"
                 strokeWidth={2}
-                dot={{ fill: "#8b5cf6", r: 4 }}
+                dot={{ fill: "#1E3A5F", r: 3 }}
                 name="Поступления"
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 className="font-semibold text-slate-800 mb-4">
-            Требуют внимания
-          </h2>
-          <div className="space-y-3">
-            {recentAlerts.map((m) => (
-              <Link
-                key={m.id}
-                href={`/admin/migrants/${m.id}`}
-                className="flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors"
-              >
-                <div
-                  className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${
-                    m.status === "blocked"
-                      ? "bg-red-500"
-                      : m.status === "expired"
-                        ? "bg-amber-500"
-                        : "bg-blue-500"
-                  }`}
-                />
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-slate-800 truncate">
-                    {m.lastName} {m.firstName}
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    {m.status === "blocked"
-                      ? "Заблокирован"
-                      : m.status === "expired"
-                        ? "Документы просрочены"
-                        : `${m.violations} нарушений`}
-                  </div>
+        <div className="bg-white rounded-md border border-slate-200 p-5 shadow-sm flex flex-col">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Сводка нарушений</h2>
+          <div className="flex flex-col gap-2 flex-1">
+            <Link
+              href="/admin/migrants?status=expired"
+              className="flex items-center justify-between p-3 rounded-md border border-slate-100 hover:border-amber-300 hover:bg-amber-50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 transition-colors">
+                  <Clock size={14} className="text-amber-600" />
                 </div>
-              </Link>
-            ))}
-          </div>
-          <div className="mt-4 p-3 bg-red-50 rounded-lg">
-            <div className="flex items-center gap-2 text-red-700">
-              <DollarSign size={14} />
-              <span className="text-xs font-medium">
-                Неоплаченные штрафы: {formatCurrency(unpaidFines)}
-              </span>
-            </div>
+                <div>
+                  <div className="text-sm font-medium text-slate-800">Просроченные</div>
+                  <div className="text-xs text-slate-400">Истёк срок регистрации</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-amber-700">{expiredMigrants}</span>
+                <ChevronRight size={14} className="text-slate-300" />
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/migrants?status=blocked"
+              className="flex items-center justify-between p-3 rounded-md border border-slate-100 hover:border-red-300 hover:bg-red-50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded flex items-center justify-center bg-red-50 group-hover:bg-red-100 transition-colors">
+                  <XCircle size={14} className="text-red-600" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-slate-800">Заблокированные</div>
+                  <div className="text-xs text-slate-400">Требуют проверки</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-red-700">{blockedMigrants}</span>
+                <ChevronRight size={14} className="text-slate-300" />
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/tasks?status=pending&type=verification"
+              className="flex items-center justify-between p-3 rounded-md border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded flex items-center justify-center bg-slate-50 group-hover:bg-slate-100 transition-colors">
+                  <CheckCircle size={14} className="text-slate-500" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-slate-800">Верификации</div>
+                  <div className="text-xs text-slate-400">Ожидают проверки selfie</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {pendingVerifications > 0 && (
+                  <span className="text-xl font-bold text-slate-700">{pendingVerifications}</span>
+                )}
+                <ChevronRight size={14} className="text-slate-300" />
+              </div>
+            </Link>
+
+            <Link
+              href="/admin/tasks?status=pending"
+              className="flex items-center justify-between p-3 rounded-md border border-slate-100 hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded flex items-center justify-center bg-blue-50 group-hover:bg-blue-100 transition-colors">
+                  <Bell size={14} className="text-blue-700" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-slate-800">Открытые задания</div>
+                  <div className="text-xs text-slate-400">Ожидают исполнения</div>
+                </div>
+              </div>
+              <ChevronRight size={14} className="text-slate-300" />
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Status summary */}
-      <div className="grid grid-cols-4 gap-4">
-        <StatusCard
-          icon={<CheckCircle size={16} className="text-emerald-600" />}
-          label="Активных"
-          value={activeMigrants}
-          bg="bg-emerald-50"
-        />
-        <StatusCard
-          icon={<Clock size={16} className="text-amber-600" />}
-          label="Просроченных"
-          value={expiredMigrants}
-          bg="bg-amber-50"
-        />
-        <StatusCard
-          icon={<XCircle size={16} className="text-red-600" />}
-          label="Заблокированных"
-          value={blockedMigrants}
-          bg="bg-red-50"
-        />
-        <StatusCard
-          icon={<MapPin size={16} className="text-blue-600" />}
-          label="Онлайн сейчас"
-          value={Math.floor(activeMigrants * 0.7)}
-          bg="bg-blue-50"
-        />
-      </div>
     </div>
   );
 }
@@ -347,17 +477,17 @@ function KpiCard({
   color: string;
   sub: string;
 }) {
-  const bgMap: Record<string, string> = {
-    blue: "bg-blue-50",
-    emerald: "bg-emerald-50",
-    amber: "bg-amber-50",
-    violet: "bg-violet-50",
+  const borderMap: Record<string, string> = {
+    blue: "border-l-4 border-l-blue-800",
+    emerald: "border-l-4 border-l-green-700",
+    amber: "border-l-4 border-l-amber-600",
+    violet: "border-l-4 border-l-red-700",
   };
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
+    <div className={`bg-white rounded-md border border-slate-200 p-5 shadow-sm ${borderMap[color]}`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-slate-500">{title}</span>
-        <div className={`w-9 h-9 rounded-lg ${bgMap[color]} flex items-center justify-center`}>
+        <span className="text-xs text-slate-500 uppercase tracking-wide font-semibold">{title}</span>
+        <div className="flex-shrink-0">
           {icon}
         </div>
       </div>
@@ -367,24 +497,3 @@ function KpiCard({
   );
 }
 
-function StatusCard({
-  icon,
-  label,
-  value,
-  bg,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  bg: string;
-}) {
-  return (
-    <div className={`${bg} rounded-xl p-4 flex items-center gap-3`}>
-      {icon}
-      <div>
-        <div className="text-xl font-bold text-slate-800">{value}</div>
-        <div className="text-xs text-slate-500">{label}</div>
-      </div>
-    </div>
-  );
-}

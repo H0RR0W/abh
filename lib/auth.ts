@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
+import { hasPermission, Permission } from "./roles";
 
 const secret = () =>
   new TextEncoder().encode(
@@ -74,4 +75,17 @@ export async function getMigrantFromReq(req: NextRequest): Promise<MigrantPayloa
   const payload = await verifyToken(token);
   if (!payload || payload.type !== "migrant") return null;
   return payload as unknown as MigrantPayload;
+}
+
+export async function requireRole(
+  req: NextRequest,
+  ...permissions: Permission[]
+): Promise<StaffPayload | null> {
+  const staff = await getStaffFromReq(req);
+  if (!staff) return null;
+  if (permissions.length === 0) return staff;
+  for (const perm of permissions) {
+    if (!hasPermission(staff.role, perm)) return null;
+  }
+  return staff;
 }

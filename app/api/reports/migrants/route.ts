@@ -12,13 +12,13 @@ export async function GET(req: NextRequest) {
 
   const headers = [
     "ID", "Фамилия", "Имя", "Гражданство", "Паспорт", "Телефон",
-    "Статус", "Рег. до", "Патент до", "Работодатель", "Нарушения",
+    "Статус", "Рег. до", "Занятость", "Работодатель", "Нарушения",
   ];
 
   const rows = migrants.map((m) =>
     [
       m.id, m.lastName, m.firstName, m.citizenship, m.passportNumber,
-      m.phone, m.status, m.registrationExpiry, m.patentExpiry ?? "",
+      m.phone, m.status, m.registrationExpiry, m.employed ? "Трудоустроен" : "Не работает",
       m.employer ?? "", m.violations,
     ].join(",")
   );

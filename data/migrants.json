@@ -1,0 +1,1050 @@
+[
+  {
+    "id": "MIG-001",
+    "firstName": "Гасан",
+    "lastName": "Мамедов",
+    "middleName": "Орхан оглы",
+    "citizenship": "Азербайджан",
+    "passportNumber": "AA1234567",
+    "phone": "+994501234567",
+    "birthDate": "1988-03-15",
+    "status": "active",
+    "registrationDate": "2025-01-10",
+    "registrationExpiry": "2025-07-10",
+    "employer": "ООО «Сухумстрой»",
+    "photo": null,
+    "address": "г. Сухум, ул. Леона, д. 12, кв. 4",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.0016,
+    "lng": 41.0234,
+    "lastSeen": "2025-05-15T10:23:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт АА1234567",
+        "status": "verified",
+        "uploadedAt": "2025-01-10"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-01-10"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.0016,
+        "lng": 41.0234,
+        "timestamp": "2025-05-15T10:23:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.002,
+        "lng": 41.024,
+        "timestamp": "2025-05-14T18:10:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.005,
+        "lng": 41.03,
+        "timestamp": "2025-05-13T09:00:00Z",
+        "address": "г. Сухум, порт"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-002",
+    "firstName": "Арам",
+    "lastName": "Саргсян",
+    "middleName": "Варданович",
+    "citizenship": "Армения",
+    "passportNumber": "AN5678901",
+    "phone": "+37491234567",
+    "birthDate": "1992-07-22",
+    "status": "active",
+    "registrationDate": "2025-02-01",
+    "registrationExpiry": "2025-08-01",
+    "employer": "ИП Кварчия А.Г.",
+    "photo": null,
+    "address": "г. Гагра, ул. Абазгаа, д. 5",
+    "district": "Гагрский",
+    "violations": 0,
+    "lat": 43.32,
+    "lng": 40.27,
+    "lastSeen": "2025-05-15T08:45:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт AN5678901",
+        "status": "verified",
+        "uploadedAt": "2025-02-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-02-01"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.32,
+        "lng": 40.27,
+        "timestamp": "2025-05-15T08:45:00Z",
+        "address": "г. Гагра"
+      },
+      {
+        "lat": 43.321,
+        "lng": 40.271,
+        "timestamp": "2025-05-14T17:30:00Z",
+        "address": "г. Гагра"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-003",
+    "firstName": "Мевлют",
+    "lastName": "Демир",
+    "middleName": "",
+    "citizenship": "Турция",
+    "passportNumber": "TR9876543",
+    "phone": "+905321234567",
+    "birthDate": "1985-11-30",
+    "status": "expired",
+    "registrationDate": "2024-11-01",
+    "registrationExpiry": "2025-05-01",
+    "employer": null,
+    "photo": null,
+    "address": "г. Пицунда, ул. Агрба, д. 3",
+    "district": "Гагрский",
+    "violations": 2,
+    "lat": 43.18,
+    "lng": 40.33,
+    "lastSeen": "2025-05-10T14:20:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт TR9876543",
+        "status": "verified",
+        "uploadedAt": "2024-11-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "expired",
+        "uploadedAt": "2024-11-01"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-020",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2024-11-05",
+        "status": "paid",
+        "description": "Разрешение на работу — ноябрь 2025"
+      },
+      {
+        "id": "PAY-021",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-01-10",
+        "status": "unpaid",
+        "description": "Разрешение на работу — январь 2025"
+      },
+      {
+        "id": "PAY-022",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-05-01",
+        "status": "overdue",
+        "description": "Разрешение на работу — май 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.18,
+        "lng": 40.33,
+        "timestamp": "2025-05-10T14:20:00Z",
+        "address": "г. Пицунда"
+      },
+      {
+        "lat": 43.182,
+        "lng": 40.328,
+        "timestamp": "2025-05-08T11:00:00Z",
+        "address": "г. Пицунда"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-004",
+    "firstName": "Нино",
+    "lastName": "Берулава",
+    "middleName": "Гиоргиевна",
+    "citizenship": "Грузия",
+    "passportNumber": "GE1122334",
+    "phone": "+995591234567",
+    "birthDate": "1995-04-08",
+    "status": "active",
+    "registrationDate": "2025-03-15",
+    "registrationExpiry": "2025-09-15",
+    "employer": "Кафе «Нарт»",
+    "photo": null,
+    "address": "г. Сухум, пр. Мира, д. 8, кв. 12",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.0045,
+    "lng": 41.018,
+    "lastSeen": "2025-05-15T11:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт GE1122334",
+        "status": "verified",
+        "uploadedAt": "2025-03-15"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-03-15"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.0045,
+        "lng": 41.018,
+        "timestamp": "2025-05-15T11:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.004,
+        "lng": 41.0175,
+        "timestamp": "2025-05-14T20:00:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-005",
+    "firstName": "Дмитрий",
+    "lastName": "Коваленко",
+    "middleName": "Иванович",
+    "citizenship": "Украина",
+    "passportNumber": "UA5544332",
+    "phone": "+380671234567",
+    "birthDate": "1980-09-14",
+    "status": "blocked",
+    "registrationDate": "2024-09-01",
+    "registrationExpiry": "2025-03-01",
+    "employer": null,
+    "photo": null,
+    "address": "г. Сухум, ул. Чанба, д. 21",
+    "district": "Сухумский",
+    "violations": 4,
+    "lat": 43.006,
+    "lng": 41.026,
+    "lastSeen": "2025-03-02T09:15:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт UA5544332",
+        "status": "verified",
+        "uploadedAt": "2024-09-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "expired",
+        "uploadedAt": "2024-09-01"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-040",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-01-05",
+        "status": "unpaid",
+        "description": "Разрешение на работу — январь 2025"
+      },
+      {
+        "id": "PAY-041",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-02-10",
+        "status": "unpaid",
+        "description": "Разрешение на работу — февраль 2025"
+      },
+      {
+        "id": "PAY-042",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-03-01",
+        "status": "unpaid",
+        "description": "Разрешение на работу — март 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.006,
+        "lng": 41.026,
+        "timestamp": "2025-03-02T09:15:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-006",
+    "firstName": "Леван",
+    "lastName": "Гелашвили",
+    "middleName": "Зурабович",
+    "citizenship": "Грузия",
+    "passportNumber": "GE9988776",
+    "phone": "+995571234567",
+    "birthDate": "1990-12-05",
+    "status": "active",
+    "registrationDate": "2025-01-20",
+    "registrationExpiry": "2025-07-20",
+    "employer": "ООО «Черноморстрой»",
+    "photo": null,
+    "address": "г. Очамчыра, ул. Нарт, д. 7",
+    "district": "Очамчырский",
+    "violations": 0,
+    "lat": 42.71,
+    "lng": 41.46,
+    "lastSeen": "2025-05-15T09:30:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт GE9988776",
+        "status": "verified",
+        "uploadedAt": "2025-01-20"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-01-20"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 42.71,
+        "lng": 41.46,
+        "timestamp": "2025-05-15T09:30:00Z",
+        "address": "г. Очамчыра"
+      },
+      {
+        "lat": 42.712,
+        "lng": 41.462,
+        "timestamp": "2025-05-14T16:00:00Z",
+        "address": "г. Очамчыра"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-007",
+    "firstName": "Ильгар",
+    "lastName": "Гасанов",
+    "middleName": "Намик оглы",
+    "citizenship": "Азербайджан",
+    "passportNumber": "AZ2233445",
+    "phone": "+994551234567",
+    "birthDate": "1983-06-18",
+    "status": "active",
+    "registrationDate": "2025-02-10",
+    "registrationExpiry": "2025-08-10",
+    "employer": null,
+    "photo": null,
+    "address": "с. Дранда, ул. Центральная, д. 14",
+    "district": "Гулрыпшский",
+    "violations": 1,
+    "lat": 42.93,
+    "lng": 41.15,
+    "lastSeen": "2025-05-14T17:45:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт AZ2233445",
+        "status": "verified",
+        "uploadedAt": "2025-02-10"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-02-10"
+      },
+      {
+        "type": "medical",
+        "name": "Медицинская справка",
+        "status": "pending",
+        "uploadedAt": "2025-03-01"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-060",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-02-15",
+        "status": "paid",
+        "description": "Разрешение на работу — февраль 2025"
+      },
+      {
+        "id": "PAY-061",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-03-10",
+        "status": "paid",
+        "description": "Разрешение на работу — март 2025"
+      },
+      {
+        "id": "PAY-062",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-03-15",
+        "status": "paid",
+        "description": "Разрешение на работу — март 2025"
+      },
+      {
+        "id": "PAY-063",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-04-15",
+        "status": "paid",
+        "description": "Разрешение на работу — апрель 2025"
+      },
+      {
+        "id": "PAY-064",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-05-15",
+        "status": "paid",
+        "description": "Разрешение на работу — май 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 42.93,
+        "lng": 41.15,
+        "timestamp": "2025-05-14T17:45:00Z",
+        "address": "с. Дранда"
+      },
+      {
+        "lat": 43.0016,
+        "lng": 41.0234,
+        "timestamp": "2025-05-13T12:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 42.93,
+        "lng": 41.15,
+        "timestamp": "2025-05-12T18:00:00Z",
+        "address": "с. Дранда"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-008",
+    "firstName": "Тамара",
+    "lastName": "Мхеидзе",
+    "middleName": "Автандиловна",
+    "citizenship": "Грузия",
+    "passportNumber": "GE7766554",
+    "phone": "+995551234567",
+    "birthDate": "1998-02-14",
+    "status": "active",
+    "registrationDate": "2025-04-01",
+    "registrationExpiry": "2025-10-01",
+    "employer": null,
+    "photo": null,
+    "address": "г. Гагра, ул. Туристическая, д. 2",
+    "district": "Гагрский",
+    "violations": 0,
+    "lat": 43.325,
+    "lng": 40.268,
+    "lastSeen": "2025-05-15T12:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт GE7766554",
+        "status": "verified",
+        "uploadedAt": "2025-04-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-04-01"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-070",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-04-01",
+        "status": "paid",
+        "description": "Разрешение на работу — апрель 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.325,
+        "lng": 40.268,
+        "timestamp": "2025-05-15T12:00:00Z",
+        "address": "г. Гагра"
+      },
+      {
+        "lat": 43.326,
+        "lng": 40.269,
+        "timestamp": "2025-05-14T19:00:00Z",
+        "address": "г. Гагра"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-009",
+    "firstName": "Бехруз",
+    "lastName": "Рахимов",
+    "middleName": "Шокирович",
+    "citizenship": "Узбекистан",
+    "passportNumber": "UZ3344556",
+    "phone": "+998901234567",
+    "birthDate": "1987-08-25",
+    "status": "expired",
+    "registrationDate": "2024-12-01",
+    "registrationExpiry": "2025-06-01",
+    "employer": null,
+    "photo": null,
+    "address": "г. Сухум, ул. Пушкина, д. 18",
+    "district": "Сухумский",
+    "violations": 1,
+    "lat": 43.003,
+    "lng": 41.02,
+    "lastSeen": "2025-05-12T08:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт UZ3344556",
+        "status": "verified",
+        "uploadedAt": "2024-12-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "expiring",
+        "uploadedAt": "2024-12-01"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-080",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2024-12-05",
+        "status": "paid",
+        "description": "Разрешение на работу — декабрь 2025"
+      },
+      {
+        "id": "PAY-081",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-01-05",
+        "status": "paid",
+        "description": "Разрешение на работу — январь 2025"
+      },
+      {
+        "id": "PAY-082",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-02-05",
+        "status": "paid",
+        "description": "Разрешение на работу — февраль 2025"
+      },
+      {
+        "id": "PAY-083",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-03-05",
+        "status": "paid",
+        "description": "Разрешение на работу — март 2025"
+      },
+      {
+        "id": "PAY-084",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-04-05",
+        "status": "paid",
+        "description": "Разрешение на работу — апрель 2025"
+      },
+      {
+        "id": "PAY-085",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-05-05",
+        "status": "overdue",
+        "description": "Разрешение на работу — май 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.003,
+        "lng": 41.02,
+        "timestamp": "2025-05-12T08:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.0016,
+        "lng": 41.0234,
+        "timestamp": "2025-05-10T14:00:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-010",
+    "firstName": "Мустафа",
+    "lastName": "Четин",
+    "middleName": "",
+    "citizenship": "Турция",
+    "passportNumber": "TR5544321",
+    "phone": "+905331234567",
+    "birthDate": "1975-03-20",
+    "status": "active",
+    "registrationDate": "2025-01-05",
+    "registrationExpiry": "2025-07-05",
+    "employer": "ООО «Турецкий Базар»",
+    "photo": null,
+    "address": "г. Сухум, ул. Эшба, д. 4",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.001,
+    "lng": 41.027,
+    "lastSeen": "2025-05-15T07:30:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт TR5544321",
+        "status": "verified",
+        "uploadedAt": "2025-01-05"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-01-05"
+      },
+      {
+        "type": "medical",
+        "name": "Медицинская справка",
+        "status": "verified",
+        "uploadedAt": "2025-01-10"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.001,
+        "lng": 41.027,
+        "timestamp": "2025-05-15T07:30:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.002,
+        "lng": 41.025,
+        "timestamp": "2025-05-14T18:30:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-011",
+    "firstName": "Анаит",
+    "lastName": "Петросян",
+    "middleName": "Арменовна",
+    "citizenship": "Армения",
+    "passportNumber": "AN6677889",
+    "phone": "+37498765432",
+    "birthDate": "1993-05-10",
+    "status": "active",
+    "registrationDate": "2025-03-01",
+    "registrationExpiry": "2025-09-01",
+    "employer": "Ресторан «Апра»",
+    "photo": null,
+    "address": "г. Сухум, ул. Когония, д. 9",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.0055,
+    "lng": 41.021,
+    "lastSeen": "2025-05-15T13:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт AN6677889",
+        "status": "verified",
+        "uploadedAt": "2025-03-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-03-01"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.0055,
+        "lng": 41.021,
+        "timestamp": "2025-05-15T13:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.006,
+        "lng": 41.0215,
+        "timestamp": "2025-05-14T21:00:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-012",
+    "firstName": "Резо",
+    "lastName": "Табатадзе",
+    "middleName": "Шотаевич",
+    "citizenship": "Грузия",
+    "passportNumber": "GE4455667",
+    "phone": "+995581234567",
+    "birthDate": "1978-01-28",
+    "status": "active",
+    "registrationDate": "2025-02-20",
+    "registrationExpiry": "2025-08-20",
+    "employer": null,
+    "photo": null,
+    "address": "г. Сухум, ул. Академика Мелия, д. 3",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.007,
+    "lng": 41.019,
+    "lastSeen": "2025-05-15T10:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт GE4455667",
+        "status": "verified",
+        "uploadedAt": "2025-02-20"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-02-20"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-110",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-02-25",
+        "status": "paid",
+        "description": "Разрешение на работу — февраль 2025"
+      },
+      {
+        "id": "PAY-111",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-03-25",
+        "status": "paid",
+        "description": "Разрешение на работу — март 2025"
+      },
+      {
+        "id": "PAY-112",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-04-25",
+        "status": "paid",
+        "description": "Разрешение на работу — апрель 2025"
+      },
+      {
+        "id": "PAY-113",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-05-25",
+        "status": "pending",
+        "description": "Разрешение на работу — май 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.007,
+        "lng": 41.019,
+        "timestamp": "2025-05-15T10:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.0075,
+        "lng": 41.0195,
+        "timestamp": "2025-05-14T18:00:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": false
+  },
+  {
+    "id": "MIG-013",
+    "firstName": "Фуркат",
+    "lastName": "Юсупов",
+    "middleName": "Улугбекович",
+    "citizenship": "Узбекистан",
+    "passportNumber": "UZ8899001",
+    "phone": "+998911234567",
+    "birthDate": "1991-11-03",
+    "status": "active",
+    "registrationDate": "2025-04-10",
+    "registrationExpiry": "2025-10-10",
+    "employer": "ООО «Цитрус»",
+    "photo": null,
+    "address": "с. Агудзера, ул. Садовая, д. 5",
+    "district": "Гулрыпшский",
+    "violations": 0,
+    "lat": 42.97,
+    "lng": 41.08,
+    "lastSeen": "2025-05-15T09:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт UZ8899001",
+        "status": "verified",
+        "uploadedAt": "2025-04-10"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-04-10"
+      },
+      {
+        "type": "medical",
+        "name": "Медицинская справка",
+        "status": "verified",
+        "uploadedAt": "2025-04-15"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 42.97,
+        "lng": 41.08,
+        "timestamp": "2025-05-15T09:00:00Z",
+        "address": "с. Агудзера"
+      },
+      {
+        "lat": 42.972,
+        "lng": 41.082,
+        "timestamp": "2025-05-14T17:00:00Z",
+        "address": "с. Агудзера"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-014",
+    "firstName": "Гиули",
+    "lastName": "Кварацхелия",
+    "middleName": "Ладоевна",
+    "citizenship": "Грузия",
+    "passportNumber": "GE3322110",
+    "phone": "+995561234567",
+    "birthDate": "2000-07-16",
+    "status": "active",
+    "registrationDate": "2025-05-01",
+    "registrationExpiry": "2025-11-01",
+    "employer": "Студентка",
+    "photo": null,
+    "address": "г. Сухум, ул. Пушкина, д. 7",
+    "district": "Сухумский",
+    "violations": 0,
+    "lat": 43.0035,
+    "lng": 41.022,
+    "lastSeen": "2025-05-15T14:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт GE3322110",
+        "status": "verified",
+        "uploadedAt": "2025-05-01"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "verified",
+        "uploadedAt": "2025-05-01"
+      }
+    ],
+    "payments": [],
+    "locationHistory": [
+      {
+        "lat": 43.0035,
+        "lng": 41.022,
+        "timestamp": "2025-05-15T14:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.004,
+        "lng": 41.0225,
+        "timestamp": "2025-05-14T20:30:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": true
+  },
+  {
+    "id": "MIG-015",
+    "firstName": "Сабир",
+    "lastName": "Алиев",
+    "middleName": "Эльмар оглы",
+    "citizenship": "Азербайджан",
+    "passportNumber": "AZ7788990",
+    "phone": "+994521234567",
+    "birthDate": "1976-04-02",
+    "status": "expired",
+    "registrationDate": "2024-10-15",
+    "registrationExpiry": "2025-04-15",
+    "employer": null,
+    "photo": null,
+    "address": "г. Сухум, пос. Маяк, д. 3",
+    "district": "Сухумский",
+    "violations": 2,
+    "lat": 43.009,
+    "lng": 41.031,
+    "lastSeen": "2025-04-20T10:00:00Z",
+    "documents": [
+      {
+        "type": "passport",
+        "name": "Паспорт AZ7788990",
+        "status": "verified",
+        "uploadedAt": "2024-10-15"
+      },
+      {
+        "type": "migration_card",
+        "name": "Миграционная карта",
+        "status": "expired",
+        "uploadedAt": "2024-10-15"
+      }
+    ],
+    "payments": [
+      {
+        "id": "PAY-140",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2024-10-20",
+        "status": "paid",
+        "description": "Разрешение на работу — октябрь 2025"
+      },
+      {
+        "id": "PAY-141",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2024-11-20",
+        "status": "paid",
+        "description": "Разрешение на работу — ноябрь 2025"
+      },
+      {
+        "id": "PAY-142",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2024-12-20",
+        "status": "paid",
+        "description": "Разрешение на работу — декабрь 2025"
+      },
+      {
+        "id": "PAY-143",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-01-20",
+        "status": "paid",
+        "description": "Разрешение на работу — январь 2025"
+      },
+      {
+        "id": "PAY-144",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-02-20",
+        "status": "paid",
+        "description": "Разрешение на работу — февраль 2025"
+      },
+      {
+        "id": "PAY-145",
+        "type": "stay_fee",
+        "amount": 5000,
+        "currency": "RUB",
+        "date": "2025-04-20",
+        "status": "unpaid",
+        "description": "Разрешение на работу — апрель 2025"
+      }
+    ],
+    "locationHistory": [
+      {
+        "lat": 43.009,
+        "lng": 41.031,
+        "timestamp": "2025-04-20T10:00:00Z",
+        "address": "г. Сухум"
+      },
+      {
+        "lat": 43.0085,
+        "lng": 41.0305,
+        "timestamp": "2025-04-18T14:00:00Z",
+        "address": "г. Сухум"
+      }
+    ],
+    "employed": false
+  }
+]

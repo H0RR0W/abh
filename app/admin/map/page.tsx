@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { Migrant } from "@/lib/types";
-import { Users, MapPin, AlertTriangle } from "lucide-react";
+import { Users, MapPin, AlertTriangle, Crosshair } from "lucide-react";
 import { getCitizenshipFlag } from "@/lib/utils";
 import Link from "next/link";
 
@@ -26,11 +26,15 @@ const STATUS_FILTERS = [
 export default function MapPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [allData, setAllData] = useState<Migrant[]>([]);
+  const [focusId, setFocusId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/migrants")
+    fetch("/api/migrants?limit=500")
       .then((r) => r.json())
-      .then((d) => { if (Array.isArray(d)) setAllData(d); })
+      .then((d) => {
+        const arr = Array.isArray(d) ? d : (d.data ?? []);
+        setAllData(arr);
+      })
       .catch(console.error);
   }, []);
 
@@ -67,7 +71,7 @@ export default function MapPage() {
       <div className="flex gap-4 flex-1 min-h-0">
         {/* Map */}
         <div className="flex-1 min-h-0">
-          <MigrantsMap migrants={filtered} />
+          <MigrantsMap migrants={filtered} focusId={focusId} />
         </div>
 
         {/* Sidebar list */}
@@ -80,12 +84,13 @@ export default function MapPage() {
           </div>
           <div className="flex-1 overflow-y-auto">
             {filtered.map((m) => (
-              <Link
+              <div
                 key={m.id}
-                href={`/admin/migrants/${m.id}`}
-                className="flex items-start gap-3 p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors"
+                className={`flex items-start gap-3 p-3 border-b border-slate-50 transition-colors ${
+                  focusId === m.id ? "bg-blue-50" : "hover:bg-slate-50"
+                }`}
               >
-                <div className="mt-1 flex flex-col items-center">
+                <div className="mt-1 flex-shrink-0">
                   <div
                     className={`w-2.5 h-2.5 rounded-full ${
                       m.status === "active"
@@ -96,23 +101,38 @@ export default function MapPage() {
                     }`}
                   />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-medium text-slate-800 truncate">
+                <Link
+                  href={`/admin/migrants/${m.id}`}
+                  className="min-w-0 flex-1"
+                >
+                  <div className="text-sm font-medium text-slate-800 truncate hover:text-blue-600 transition-colors">
                     {m.lastName} {m.firstName}
                   </div>
-                  <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                    {getCitizenshipFlag(m.citizenship)}
-                    <span>{m.citizenship}</span>
+                  <div className="text-xs text-slate-400 mt-0.5">
+                    {m.citizenship}
                   </div>
                   <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
                     <MapPin size={10} />
                     {m.address.split(",")[0]}
                   </div>
+                </Link>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {m.violations > 0 && (
+                    <AlertTriangle size={13} className="text-amber-500" />
+                  )}
+                  <button
+                    onClick={() => setFocusId(focusId === m.id ? null : m.id)}
+                    title="Показать на карте"
+                    className={`p-1.5 rounded-lg transition-colors ${
+                      focusId === m.id
+                        ? "bg-blue-600 text-white"
+                        : "text-slate-400 hover:text-blue-600 hover:bg-blue-50"
+                    }`}
+                  >
+                    <Crosshair size={13} />
+                  </button>
                 </div>
-                {m.violations > 0 && (
-                  <AlertTriangle size={14} className="text-amber-500 flex-shrink-0 mt-0.5" />
-                )}
-              </Link>
+              </div>
             ))}
           </div>
         </div>

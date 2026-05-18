@@ -12,6 +12,7 @@ model StaffUser {
   password  String
   name      String
   role      String   @default("inspector")
+  districts String   @default("[]")
   createdAt DateTime @default(now())
 }
 
@@ -22,16 +23,22 @@ model Migrant {
   middleName         String   @default("")
   citizenship        String
   passportNumber     String
+  passportSeries     String?
+  passportIssuedBy   String?
+  passportIssueDate  String?
+  passportExpiry     String?
   phone              String
   birthDate          String
   status             String   @default("active")
   registrationDate   String
   registrationExpiry String
-  patentNumber       String?
-  patentExpiry       String?
+  employed           Boolean  @default(false)
   employer           String?
   photo              String?
+  selfiePhoto        String?
+  identityStatus     String   @default("unverified")
   address            String
+  district           String   @default("Сухумский")
   violations         Int      @default(0)
   lat                Float
   lng                Float
@@ -43,6 +50,8 @@ model Migrant {
   payments        Payment[]
   locationHistory LocationHistory[]
   chatMessages    ChatMessage[]
+  inspections     Inspection[]
+  violations2     Violation[]
 }
 
 model Document {
@@ -97,4 +106,31 @@ model SmsCode {
   code      String
   expiresAt DateTime
   used      Boolean  @default(false)
+}
+
+model Inspection {
+  id         String   @id @default(cuid())
+  migrantId  String
+  type       String
+  date       String
+  inspector  String
+  note       String   @default("")
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
+}
+
+model Violation {
+  id          String   @id @default(cuid())
+  migrantId   String
+  type        String
+  description String   @default("")
+  severity    String   @default("medium")
+  date        String
+  fine        Int      @default(0)
+  fineStatus  String   @default("unpaid")
+  createdAt   DateTime @default(now())
+
+  migrant Migrant @relation(fields: [migrantId], references: [id], onDelete: Cascade)
 }

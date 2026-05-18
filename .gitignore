@@ -29,9 +29,11 @@ yarn-error.log*
 .env*.local
 .env
 
-# prisma sqlite database
+# prisma sqlite database (не коммитим, переносим вручную через scp)
 prisma/*.db
 prisma/*.db-journal
+prisma/*.db-shm
+prisma/*.db-wal
 
 # vercel
 .vercel

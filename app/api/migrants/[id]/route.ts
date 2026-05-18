@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getStaffFromReq } from "@/lib/auth";
+import { requireRole } from "@/lib/auth";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const staff = await getStaffFromReq(req);
+  const staff = await requireRole(req, "migrants.view");
   if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = params;
@@ -22,11 +22,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const staff = await getStaffFromReq(req);
-  if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const staff = await requireRole(req, "migrants.edit");
+  if (!staff) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = params;
   const body = await req.json();
+
+  // Status changes require additional permission
+  if ("status" in body) {
+    const staffWithStatus = await requireRole(req, "migrants.status");
+    if (!staffWithStatus)
+      return NextResponse.json({ error: "Forbidden: status changes require inspector or admin role" }, { status: 403 });
+  }
+
   const allowed = [
     "status", "firstName", "lastName", "middleName", "citizenship",
     "passportNumber", "phone", "birthDate", "registrationDate",
@@ -43,8 +51,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const staff = await getStaffFromReq(req);
-  if (!staff || staff.role !== "admin")
+  const staff = await requireRole(req, "migrants.delete");
+  if (!staff)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = params;
