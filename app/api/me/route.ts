@@ -6,6 +6,13 @@ export async function GET(req: NextRequest) {
   const auth = await getMigrantFromReq(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Авто-просрочка при входе в кабинет
+  const today = new Date().toISOString().split("T")[0];
+  await prisma.migrant.updateMany({
+    where: { id: auth.sub, status: "active", registrationExpiry: { lt: today } },
+    data: { status: "expired" },
+  });
+
   const migrant = await prisma.migrant.findUnique({
     where: { id: auth.sub },
     include: {
