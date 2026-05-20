@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/auth";
+import { autoExpireMigrants } from "@/lib/autoExpire";
 
 export async function GET(req: NextRequest) {
   const staff = await requireRole(req, "migrants.view");
   if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Автоматически переводим просроченных в expired
+  await autoExpireMigrants();
 
   const { searchParams } = req.nextUrl;
   const search = searchParams.get("search") ?? "";

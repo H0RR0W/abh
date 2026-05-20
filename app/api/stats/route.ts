@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getStaffFromReq } from "@/lib/auth";
+import { autoExpireMigrants } from "@/lib/autoExpire";
 
 export async function GET(req: NextRequest) {
   const staff = await getStaffFromReq(req);
   if (!staff) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await autoExpireMigrants();
 
   // Status counts
   const [total, active, expired, blocked] = await Promise.all([
