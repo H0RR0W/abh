@@ -782,11 +782,22 @@ export default function MigrantCabinetPage() {
             <div className="bg-white rounded-lg border border-slate-200 p-4">
               <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{t.home.notifications}</h3>
               <div className="space-y-2">
-                {daysLeft < 60 && daysLeft > 0 && (
+                {daysLeft <= 0 && (
+                  <div className="flex items-start gap-3 p-2 bg-red-50 rounded-md border border-red-100">
+                    <AlertTriangle size={14} className="text-red-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="text-xs font-medium text-red-800">
+                        {daysLeft === 0 ? t.profile.expiredToday : <>{t.profile.expiredAgo} <b>{Math.abs(daysLeft)}</b> {t.profile.daysAgo}</>}
+                      </div>
+                      <div className="text-xs text-red-600">{t.home.notifExpiringSub}</div>
+                    </div>
+                  </div>
+                )}
+                {daysLeft > 0 && daysLeft < 60 && (
                   <div className="flex items-start gap-3 p-2 bg-amber-50 rounded-md border border-amber-100">
                     <AlertTriangle size={14} className="text-amber-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="text-xs font-medium text-amber-800">{t.home.notifExpiring} {daysLeft}</div>
+                      <div className="text-xs font-medium text-amber-800">{t.home.notifExpiring} {daysLeft} {t.profile.daysWord}</div>
                       <div className="text-xs text-amber-600">{t.home.notifExpiringSub}</div>
                     </div>
                   </div>
@@ -1786,10 +1797,17 @@ export default function MigrantCabinetPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="bg-amber-50 rounded-md p-3 flex gap-3 border border-amber-100">
-                  <AlertTriangle size={15} className="text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div className="text-xs text-amber-700">
-                    {t.profile.soonWarning} <b>{daysLeft}</b>.
+                <div className={`rounded-md p-3 flex gap-3 border ${daysLeft < 0 ? "bg-red-50 border-red-100" : daysLeft <= 7 ? "bg-red-50 border-red-100" : "bg-amber-50 border-amber-100"}`}>
+                  <AlertTriangle size={15} className={`flex-shrink-0 mt-0.5 ${daysLeft < 0 || daysLeft <= 7 ? "text-red-500" : "text-amber-600"}`} />
+                  <div className={`text-xs ${daysLeft < 0 || daysLeft <= 7 ? "text-red-700" : "text-amber-700"}`}>
+                    {daysLeft < 0
+                      ? <>{t.profile.expiredAgo} <b>{Math.abs(daysLeft)}</b> {t.profile.daysAgo}.</>
+                      : daysLeft === 0
+                        ? <>{t.profile.expiredToday}</>
+                        : daysLeft <= 7
+                          ? <>{t.profile.urgentWarning} <b>{daysLeft}</b> {t.profile.daysWord}!</>
+                          : <>{t.profile.soonWarning} <b>{daysLeft}</b> {t.profile.daysWord}.</>
+                    }
                   </div>
                 </div>
                 <div className="space-y-2 text-sm">
@@ -1852,7 +1870,13 @@ export default function MigrantCabinetPage() {
                 <div>
                   <div className="text-sm font-medium text-slate-800">{t.nav.registrationUntil}</div>
                   <div className="text-xs text-slate-500 mt-0.5">
-                    {migrant.registrationExpiry ? formatDate(migrant.registrationExpiry) : "—"}. {t.nav.daysLeft}: {daysLeft}.
+                    {migrant.registrationExpiry ? formatDate(migrant.registrationExpiry) : "—"}.{" "}
+                    {daysLeft < 0
+                      ? <span className="text-red-500">{t.profile.expiredAgo} {Math.abs(daysLeft)} {t.profile.daysAgo}</span>
+                      : daysLeft === 0
+                        ? <span className="text-red-500">{t.profile.expiredToday}</span>
+                        : <>{t.nav.daysLeft}: {daysLeft}</>
+                    }
                   </div>
                 </div>
               </div>
